@@ -15,12 +15,13 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-This is series of code to analyze my thesis data using repeated measure ANOVAs and the afex package.
+This is portfolio piece I will use to analyze some of my thesis data using repeated measure ANOVAs. I used the afex package for my ANOVA because it uses the same sum of squares as SPSS and was recommended by Anthony. I also used a tutorial, "Chapter21: ANOVA (afex): Within Subjects and Mixed Designs" by Matthew McCurdy to guide me.
 
 ```{r load-data}
 library(readxl)
 library(psych)
 library(tidyverse)
+library(afex)
 Old <- read_excel("Old.xlsx")
 
 str(Old)
@@ -63,14 +64,40 @@ Old.Table #call the object to see the means table
 
 ggplot(Old, mapping = aes(x = Shift_type, y = RT)) +
   geom_bar(stat = "summary")+
-  facet_grid(.~Block_type)
+  facet_grid(.~Block_type)+
+  labs(title = "Response Times on an Attention Shifting Paradigm in Older Adults")
 
 ```
 
+```{r ANOVA-with-generalized-eta-squared}
 
 
+Old.aov.1 <- aov_car(RT ~ Block_type*Shift_type+ Error(PID/Block_type*Shift_type), data=Old)
+
+Old.aov.1 #call object to see ANOVA table
 
 
+```
+I put both eta squared options because I don't know which is better currently.
+```{r ANOVA-with_partial-eta-squared}
+
+Old.aov.2 <- aov_car(RT ~ Block_type*Shift_type+ Error(PID/Block_type*Shift_type), data=Old,
+                     anova_table = list(es = "pes"))
+
+Old.aov.2 #call object to see ANOVA table
+```
+
+```{r main-effect-cue}
+Shift_type_follow_up<-emmeans(Old.aov.1, ~Shift_type)
+
+Shift_type_follow_up
+```
+
+
+```{r interaction}
+Old_Interaction <- emmeans(Old.aov.1, ~ Block_type|Shift_type)
+Old_Interaction
+```
 
 
 
