@@ -19,28 +19,59 @@ This is series of code to analyze my thesis data using repeated measure ANOVAs a
 
 ```{r load-data}
 library(readxl)
-Young <- read_excel("Young.xlsx")
+library(psych)
+library(tidyverse)
+Old <- read_excel("Old.xlsx")
 
-str(Young)
+str(Old)
 ```
 
 
 ```{r change-to-factor}
-Young$PID<-as.factor(Young$PID)
+Old$PID<-as.factor(Old$PID)
 
 ```
 
-```{r}
-Young$Block_type <- factor(Young$Block_type,
+```{r assign-labels}
+Old$Block_type <- factor(Old$Block_type,
                                levels = c(1,2),
                                labels = c("Mostly_Hold_Block", "Mostly_Shift_Block")) 
 
 #converts 1's and 2's in the data file to correspond to factor labels of the block type variable of study method.
 
-Young$Shift_type <-factor(Young$Shift_type,
+Old$Shift_type <-factor(Old$Shift_type,
                                   levels = c(1,2),
                                   labels = c("Hold_Cue", "Shift_Cue")) 
 
 #converts 1's and 2's in the data file to correspond to factor labels of the cue type variable of time.
 ```
+
+```{r check-labels}
+head(Old, n=5)
+```
+
+```{r descriptives}
+#use psych package to call for descriptives of your dataset and place into an object.
+
+Old.Table<-describe(Old)
+
+Old.Table #call the object to see the means table
+```
+
+
+```{r graphing}
+
+ggplot(Old, mapping = aes(x = Shift_type, y = RT)) +
+  geom_bar(stat = "summary")+
+  facet_grid(.~Block_type)
+
+```
+
+
+
+
+
+
+
+
 
