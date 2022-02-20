@@ -22,6 +22,7 @@ library(readxl)
 library(psych)
 library(tidyverse)
 library(afex)
+library(emmeans)
 Old <- read_excel("Old.xlsx")
 
 str(Old)
@@ -65,7 +66,7 @@ Old.Table #call the object to see the means table
 ggplot(Old, mapping = aes(x = Shift_type, y = RT)) +
   geom_bar(stat = "summary")+
   facet_grid(.~Block_type)+
-  labs(title = "Response Times on an Attention Shifting Paradigm in Older Adults")
+  labs(title = "Response Times on an Attention Shifting Paradigm in Older Adults" , x = "Cue Type")
 
 ```
 
@@ -95,8 +96,10 @@ Shift_type_follow_up
 
 
 ```{r interaction}
-Old_Interaction <- emmeans(Old.aov.1, ~ Block_type|Shift_type)
+Old_Interaction <- emmeans(Old.aov.1, ~ Shift_type|Block_type)
 Old_Interaction
+#compare means, bonferroni corrected
+pairs(Old_Interaction, adjust = "bon")
 ```
 
 
