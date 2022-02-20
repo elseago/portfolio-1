@@ -8,23 +8,39 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-is this working?
+
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+This is series of code to analyze my thesis data using repeated measure ANOVAs and the afex package.
+
+```{r load-data}
+library(readxl)
+Young <- read_excel("Young.xlsx")
+
+str(Young)
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
+```{r change-to-factor}
+Young$PID<-as.factor(Young$PID)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+Young$Block_type <- factor(Young$Block_type,
+                               levels = c(1,2),
+                               labels = c("Mostly_Hold_Block", "Mostly_Shift_Block")) 
+
+#converts 1's and 2's in the data file to correspond to factor labels of the block type variable of study method.
+
+Young$Shift_type <-factor(Young$Shift_type,
+                                  levels = c(1,2),
+                                  labels = c("Hold_Cue", "Shift_Cue")) 
+
+#converts 1's and 2's in the data file to correspond to factor labels of the cue type variable of time.
+```
+
